@@ -391,7 +391,12 @@ namespace RacerTools
             savedYcoord = savedYcoord + 100;
         }
 
-
+        private void button1_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Pressing 1 saves current position\nPressing 2 goes to saved position\n\n"
+                + "Tested to work with manually installed Racer with DGVoodoo. 64-bit installed versions may not work\n\n"
+                + "For the source code and credits to other people, press Help to go the Github page", "hello I'm a help box", MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, 0, "https://github.com/JichiSenpai/RacerTools");
+        }
     }
 
 }
