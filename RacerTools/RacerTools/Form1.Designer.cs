@@ -153,7 +153,8 @@
             this.Controls.Add(this.savePositionbtn);
             this.Controls.Add(this.statusLabel);
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.Text = "RacerTools";
+            this.Load += new System.EventHandler(this.Form1_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

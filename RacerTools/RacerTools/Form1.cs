@@ -45,7 +45,7 @@ namespace RacerTools
         {
             InitializeComponent();
         }
-
+        
         private void Form1_Load(object sender, EventArgs e)
         {
             KeyboardHook.CreateHook(KeyReader);
@@ -57,90 +57,11 @@ namespace RacerTools
         }
         private void savePositionbtn_Click(object sender, EventArgs e)
         {
-            #region X
-            if (isGameAvailable)
-            {
-                myMemory.ReadProcess = myProcess[0];
-                myMemory.Open();
-                int XpointerAddress = HexToDec(xPointer);
-                int[] XpointerOffSet = xOff;
-                int bytesRead;
-                uint valueToRead = 50;
-                byte[] readAddress = myMemory.PointerRead((IntPtr)XpointerAddress, valueToRead, XpointerOffSet, out bytesRead);
-                savedXcoord = BitConverter.ToSingle(readAddress, 0);
-                myMemory.CloseHandle();
-            }
-            #endregion
-            #region Z
-            if (isGameAvailable)
-            {
-                myMemory.ReadProcess = myProcess[0];
-                myMemory.Open();
-                int ZpointerAddress = HexToDec(zPointer);
-                int[] ZpointerOffSet = zOff;
-                int bytesRead;
-                uint valueToRead = 54;
-                byte[] readAddress = myMemory.PointerRead((IntPtr)ZpointerAddress, valueToRead, ZpointerOffSet, out bytesRead);
-                savedZcoord = BitConverter.ToSingle(readAddress, 0);
-                myMemory.CloseHandle();
-            }
-            #endregion
-            #region Y
-            if (isGameAvailable)
-            {
-                myMemory.ReadProcess = myProcess[0];
-                myMemory.Open();
-                int YpointerAddress = HexToDec(yPointer);
-                int[] YpointerOffSet = yOff;
-                int bytesRead;
-                uint valueToRead = 54;
-                byte[] readAddress = myMemory.PointerRead((IntPtr)YpointerAddress, valueToRead, YpointerOffSet, out bytesRead);
-                savedYcoord = BitConverter.ToSingle(readAddress, 0);
-                myMemory.CloseHandle();
-            }
-            #endregion
+            saveCurrentPosition();
         }
         private void gotoPositionbtn_Click(object sender, EventArgs e)
         {
-            #region X
-            if (isGameAvailable)
-            {
-                myMemory.ReadProcess = myProcess[0];
-                myMemory.Open();
-                int XpointerAddress = HexToDec(xPointer);
-                int[] XpointerOffSet = xOff;
-                int bytesWritten;
-                byte[] valueToWrite = BitConverter.GetBytes(savedXcoord);
-                string writtenAddress = myMemory.PointerWrite((IntPtr)XpointerAddress, valueToWrite, XpointerOffSet, out bytesWritten);
-                myMemory.CloseHandle();
-            }
-            #endregion
-            #region Z
-            if (isGameAvailable)
-            {
-                myMemory.ReadProcess = myProcess[0];
-                myMemory.Open();
-                int ZpointerAddress = HexToDec(zPointer);
-                int[] ZpointerOffSet = zOff;
-                int bytesWritten;
-                byte[] valueToWrite = BitConverter.GetBytes(savedZcoord);
-                string writtenAddress = myMemory.PointerWrite((IntPtr)ZpointerAddress, valueToWrite, ZpointerOffSet, out bytesWritten);
-                myMemory.CloseHandle();
-            }
-            #endregion
-            #region Y
-            if (isGameAvailable)
-            {
-                myMemory.ReadProcess = myProcess[0];
-                myMemory.Open();
-                int YpointerAddress = HexToDec(yPointer);
-                int[] YpointerOffSet = yOff;
-                int bytesWritten;
-                byte[] valueToWrite = BitConverter.GetBytes(savedYcoord);
-                string writtenAddress = myMemory.PointerWrite((IntPtr)YpointerAddress, valueToWrite, YpointerOffSet, out bytesWritten);
-                myMemory.CloseHandle();
-            }
-            #endregion
+            goToSavedPosition();
         }
         private void GameAvailableTimer_Tick(object sender, EventArgs e)
         {
@@ -294,12 +215,39 @@ namespace RacerTools
             {
                 if (isGameAvailable)
                 {
-                    goToZeroPosition();
+                    saveCurrentPosition();
+                }
+                else
+                {
+                    ReportError();
+                }
+            }
+            if (temp == "2")
+            {
+                if (isGameAvailable)
+                {
+                    goToSavedPosition();
+                }
+                else
+                {
+                    ReportError();
                 }
             }
             #endregion
-        }
 
+
+        }
+        private void ReportError()
+        {
+            int debug = Thread.CurrentThread.ManagedThreadId;
+            Action action = ShowMessage;
+            IAsyncResult res = BeginInvoke(action);
+        }
+        private void ShowMessage()
+        {
+            MessageBox.Show("Make sure game is running");
+
+        }
         public void goToZeroPosition()
         {
             #region X
@@ -343,6 +291,94 @@ namespace RacerTools
             #endregion
         }
 
+        public void saveCurrentPosition()
+        {
+            #region X
+            if (isGameAvailable)
+            {
+                myMemory.ReadProcess = myProcess[0];
+                myMemory.Open();
+                int XpointerAddress = HexToDec(xPointer);
+                int[] XpointerOffSet = xOff;
+                int bytesRead;
+                uint valueToRead = 50;
+                byte[] readAddress = myMemory.PointerRead((IntPtr)XpointerAddress, valueToRead, XpointerOffSet, out bytesRead);
+                savedXcoord = BitConverter.ToSingle(readAddress, 0);
+                myMemory.CloseHandle();
+            }
+            #endregion
+            #region Z
+            if (isGameAvailable)
+            {
+                myMemory.ReadProcess = myProcess[0];
+                myMemory.Open();
+                int ZpointerAddress = HexToDec(zPointer);
+                int[] ZpointerOffSet = zOff;
+                int bytesRead;
+                uint valueToRead = 54;
+                byte[] readAddress = myMemory.PointerRead((IntPtr)ZpointerAddress, valueToRead, ZpointerOffSet, out bytesRead);
+                savedZcoord = BitConverter.ToSingle(readAddress, 0);
+                myMemory.CloseHandle();
+            }
+            #endregion
+            #region Y
+            if (isGameAvailable)
+            {
+                myMemory.ReadProcess = myProcess[0];
+                myMemory.Open();
+                int YpointerAddress = HexToDec(yPointer);
+                int[] YpointerOffSet = yOff;
+                int bytesRead;
+                uint valueToRead = 54;
+                byte[] readAddress = myMemory.PointerRead((IntPtr)YpointerAddress, valueToRead, YpointerOffSet, out bytesRead);
+                savedYcoord = BitConverter.ToSingle(readAddress, 0);
+                myMemory.CloseHandle();
+            }
+            #endregion
+        }
+        public void goToSavedPosition()
+        {
+            #region X
+            if (isGameAvailable)
+            {
+                myMemory.ReadProcess = myProcess[0];
+                myMemory.Open();
+                int XpointerAddress = HexToDec(xPointer);
+                int[] XpointerOffSet = xOff;
+                int bytesWritten;
+                byte[] valueToWrite = BitConverter.GetBytes(savedXcoord);
+                string writtenAddress = myMemory.PointerWrite((IntPtr)XpointerAddress, valueToWrite, XpointerOffSet, out bytesWritten);
+                myMemory.CloseHandle();
+            }
+            #endregion
+            #region Z
+            if (isGameAvailable)
+            {
+                myMemory.ReadProcess = myProcess[0];
+                myMemory.Open();
+                int ZpointerAddress = HexToDec(zPointer);
+                int[] ZpointerOffSet = zOff;
+                int bytesWritten;
+                byte[] valueToWrite = BitConverter.GetBytes(savedZcoord);
+                string writtenAddress = myMemory.PointerWrite((IntPtr)ZpointerAddress, valueToWrite, ZpointerOffSet, out bytesWritten);
+                myMemory.CloseHandle();
+            }
+            #endregion
+            #region Y
+            if (isGameAvailable)
+            {
+                myMemory.ReadProcess = myProcess[0];
+                myMemory.Open();
+                int YpointerAddress = HexToDec(yPointer);
+                int[] YpointerOffSet = yOff;
+                int bytesWritten;
+                byte[] valueToWrite = BitConverter.GetBytes(savedYcoord);
+                string writtenAddress = myMemory.PointerWrite((IntPtr)YpointerAddress, valueToWrite, YpointerOffSet, out bytesWritten);
+                myMemory.CloseHandle();
+            }
+            #endregion
+        }
+
         private void positionTimer_Tick(object sender, EventArgs e)
         {
             curPosXLbl.Text = "X: " + savedXcoord;
@@ -354,6 +390,8 @@ namespace RacerTools
         {
             savedYcoord = savedYcoord + 100;
         }
+
+
     }
 
 }
