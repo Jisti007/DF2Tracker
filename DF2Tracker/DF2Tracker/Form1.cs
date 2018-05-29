@@ -16,7 +16,7 @@ using System.Threading;
 //made using tutorial by Guided Hacker https://www.youtube.com/watch?v=0osZuafJuB0
 //KeyboardHook and Memory not made by me, they are made by the guys credited in the files
 
-namespace RacerTools
+namespace DF2Tracker
 {
     public partial class Form1 : Form
     {
@@ -25,20 +25,9 @@ namespace RacerTools
         Process[] myProcess;
         bool isGameAvailable = false;
         
-        string xPointer = "004BFD28";
-        int[] xOff = {0x50};
-        string zPointer = "004D7878";
-        int[] zOff = {0x54};
-        string yPointer = "00E29C04";
-        int[] yOff = {0x58};
+        string currentSecretCountAddress = "008C53B8";
 
-        float xCoord = 0;
-        float zCoord = 0;
-        float yCoord = 0;
-
-        float savedXcoord;
-        float savedZcoord;
-        float savedYcoord;
+        float currentSecretCount;
         #endregion
 
         public Form1()
@@ -51,29 +40,17 @@ namespace RacerTools
             KeyboardHook.CreateHook(KeyReader);
         }
 
-        private void gotoZerobtn_Click(object sender, EventArgs e)
-        {
-            goToZeroPosition();
-        }
-        private void savePositionbtn_Click(object sender, EventArgs e)
-        {
-            saveCurrentPosition();
-        }
-        private void gotoPositionbtn_Click(object sender, EventArgs e)
-        {
-            goToSavedPosition();
-        }
         private void GameAvailableTimer_Tick(object sender, EventArgs e)
         {
-            myProcess = Process.GetProcessesByName("SWEP1RCR");
+            myProcess = Process.GetProcessesByName("JediKnight");
             if (myProcess.Length != 0)
             {
                 isGameAvailable = true;
-                statusLabel.Text = "Status: SWEP1RCR.exe found";
+                statusLabel.Text = "Status: JediKnight.exe found";
             }
             else
             {
-                statusLabel.Text = "Status: SWEP1RCR.exe NOT found";
+                statusLabel.Text = "Status: JediKnight.exe NOT found";
             }
         }
         public static string HexToDec(int DEC)
@@ -210,6 +187,7 @@ namespace RacerTools
                 default: break;
             }
 
+            /* Racertools key triggers
             #region Key triggers
             if (temp == "1")
             {
@@ -234,7 +212,7 @@ namespace RacerTools
                 }
             }
             #endregion
-
+            */
 
         }
         private void ReportError()
@@ -248,155 +226,44 @@ namespace RacerTools
             MessageBox.Show("Make sure game is running");
 
         }
-        public void goToZeroPosition()
-        {
-            #region X
-            if (isGameAvailable)
-            {
-                myMemory.ReadProcess = myProcess[0];
-                myMemory.Open();
-                int XpointerAddress = HexToDec(xPointer);
-                int[] XpointerOffSet = xOff;
-                int bytesWritten;
-                byte[] valueToWrite = BitConverter.GetBytes(xCoord);
-                string writtenAddress = myMemory.PointerWrite((IntPtr)XpointerAddress, valueToWrite, XpointerOffSet, out bytesWritten);
-                myMemory.CloseHandle();
-            }
-            #endregion
-            #region Z
-            if (isGameAvailable)
-            {
-                myMemory.ReadProcess = myProcess[0];
-                myMemory.Open();
-                int ZpointerAddress = HexToDec(zPointer);
-                int[] ZpointerOffSet = zOff;
-                int bytesWritten;
-                byte[] valueToWrite = BitConverter.GetBytes(zCoord);
-                string writtenAddress = myMemory.PointerWrite((IntPtr)ZpointerAddress, valueToWrite, ZpointerOffSet, out bytesWritten);
-                myMemory.CloseHandle();
-            }
-            #endregion
-            #region Y
-            if (isGameAvailable)
-            {
-                myMemory.ReadProcess = myProcess[0];
-                myMemory.Open();
-                int YpointerAddress = HexToDec(yPointer);
-                int[] YpointerOffSet = yOff;
-                int bytesWritten;
-                byte[] valueToWrite = BitConverter.GetBytes(yCoord);
-                string writtenAddress = myMemory.PointerWrite((IntPtr)YpointerAddress, valueToWrite, YpointerOffSet, out bytesWritten);
-                myMemory.CloseHandle();
-            }
-            #endregion
-        }
 
-        public void saveCurrentPosition()
+        private void currentSecretTimer_Tick(object sender, EventArgs e)
         {
-            #region X
+
+            //TODO: FIX THIS POS
             if (isGameAvailable)
             {
                 myMemory.ReadProcess = myProcess[0];
                 myMemory.Open();
-                int XpointerAddress = HexToDec(xPointer);
-                int[] XpointerOffSet = xOff;
+                int XpointerAddress = HexToDec(currentSecretCountAddress);
                 int bytesRead;
-                uint valueToRead = 50;
+                uint valueToRead = 3;
+                byte[] readAddress = myMemory.Read((IntPtr)XpointerAddress, valueToRead, out bytesRead);
+                currentSecretCount = BitConverter.ToSingle(readAddress, 0);
+                myMemory.CloseHandle();
+            }
+
+            /*if (isGameAvailable)
+            {
+                myMemory.ReadProcess = myProcess[0];
+                myMemory.Open();
+                int XpointerAddress = HexToDec(currentSecretCountAddress);
+                int[] XpointerOffSet = { 0x0 };
+                int bytesRead;
+                uint valueToRead = 0;
                 byte[] readAddress = myMemory.PointerRead((IntPtr)XpointerAddress, valueToRead, XpointerOffSet, out bytesRead);
-                savedXcoord = BitConverter.ToSingle(readAddress, 0);
+                currentSecretCount = BitConverter.ToSingle(readAddress, 0);
                 myMemory.CloseHandle();
-            }
-            #endregion
-            #region Z
-            if (isGameAvailable)
-            {
-                myMemory.ReadProcess = myProcess[0];
-                myMemory.Open();
-                int ZpointerAddress = HexToDec(zPointer);
-                int[] ZpointerOffSet = zOff;
-                int bytesRead;
-                uint valueToRead = 54;
-                byte[] readAddress = myMemory.PointerRead((IntPtr)ZpointerAddress, valueToRead, ZpointerOffSet, out bytesRead);
-                savedZcoord = BitConverter.ToSingle(readAddress, 0);
-                myMemory.CloseHandle();
-            }
-            #endregion
-            #region Y
-            if (isGameAvailable)
-            {
-                myMemory.ReadProcess = myProcess[0];
-                myMemory.Open();
-                int YpointerAddress = HexToDec(yPointer);
-                int[] YpointerOffSet = yOff;
-                int bytesRead;
-                uint valueToRead = 54;
-                byte[] readAddress = myMemory.PointerRead((IntPtr)YpointerAddress, valueToRead, YpointerOffSet, out bytesRead);
-                savedYcoord = BitConverter.ToSingle(readAddress, 0);
-                myMemory.CloseHandle();
-            }
-            #endregion
-        }
-        public void goToSavedPosition()
-        {
-            #region X
-            if (isGameAvailable)
-            {
-                myMemory.ReadProcess = myProcess[0];
-                myMemory.Open();
-                int XpointerAddress = HexToDec(xPointer);
-                int[] XpointerOffSet = xOff;
-                int bytesWritten;
-                byte[] valueToWrite = BitConverter.GetBytes(savedXcoord);
-                string writtenAddress = myMemory.PointerWrite((IntPtr)XpointerAddress, valueToWrite, XpointerOffSet, out bytesWritten);
-                myMemory.CloseHandle();
-            }
-            #endregion
-            #region Z
-            if (isGameAvailable)
-            {
-                myMemory.ReadProcess = myProcess[0];
-                myMemory.Open();
-                int ZpointerAddress = HexToDec(zPointer);
-                int[] ZpointerOffSet = zOff;
-                int bytesWritten;
-                byte[] valueToWrite = BitConverter.GetBytes(savedZcoord);
-                string writtenAddress = myMemory.PointerWrite((IntPtr)ZpointerAddress, valueToWrite, ZpointerOffSet, out bytesWritten);
-                myMemory.CloseHandle();
-            }
-            #endregion
-            #region Y
-            if (isGameAvailable)
-            {
-                myMemory.ReadProcess = myProcess[0];
-                myMemory.Open();
-                int YpointerAddress = HexToDec(yPointer);
-                int[] YpointerOffSet = yOff;
-                int bytesWritten;
-                byte[] valueToWrite = BitConverter.GetBytes(savedYcoord);
-                string writtenAddress = myMemory.PointerWrite((IntPtr)YpointerAddress, valueToWrite, YpointerOffSet, out bytesWritten);
-                myMemory.CloseHandle();
-            }
-            #endregion
-        }
+            }*/
 
-        private void positionTimer_Tick(object sender, EventArgs e)
-        {
-            curPosXLbl.Text = "X: " + savedXcoord;
-            curPosYLbl.Text = "Y: " + savedYcoord;
-            curPosZLbl.Text = "Z: " + savedZcoord;
+            currentSecretLabel.Text = "voi kulli " + currentSecretCount;
         }
-
-        private void addSavedYValue_Click(object sender, EventArgs e)
-        {
-            savedYcoord = savedYcoord + 100;
-        }
-
         private void button1_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Pressing 1 saves current position\nPressing 2 goes to saved position\n\n"
-                + "Tested to work with manually installed Racer with DGVoodoo. 64-bit installed versions may not work\n\n"
-                + "For the source code and credits to other people, press Help to go the Github page", "hello I'm a help box", MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, 0, "https://github.com/JichiSenpai/RacerTools");
+            MessageBox.Show("remember to edit this\n\n"
+                + "For the source code and credits to other people, press Help to go the Github page", "hello I'm a help box", MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, 0, "https://github.com/Jisti007/DF2Tracker");
         }
+
     }
 
 }

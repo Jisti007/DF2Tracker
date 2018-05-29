@@ -9,7 +9,7 @@ using System.Diagnostics;
 //FULL CREDITS TO 
 //http://www.blizzhackers.cc/viewtopic.php?t=396398
 
-namespace RacerTools
+namespace DF2Tracker
 {
     //constructor loads all the dll's
     class KeyboardHook

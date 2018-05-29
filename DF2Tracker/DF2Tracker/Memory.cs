@@ -6,7 +6,7 @@ using System.Runtime.InteropServices; //USED TO CALL THE DLL IMPORTS
 using System.Globalization;
 using System.Diagnostics;
 //using System.Windows.Forms; //DELETE ME
-namespace RacerTools
+namespace DF2Tracker
 {
     //Class wasnt done by me
     //FULL CREDITS TO
