@@ -18,19 +18,39 @@ using System.Threading;
 
 namespace DF2Tracker
 {
-    public partial class Form1 : Form
+    public partial class TrackerMain : Form
     {
-        #region Global variables
+        // Global variables
         Memory myMemory = new Memory();
         Process[] myProcess;
         bool isGameAvailable = false;
-        
+
+        //BASE ADDRESS: 008C53B8
+        //some pointer: 00006954
+        //This might not be correct, pointer scans yielded 110 results which sucks. will try to find a proper one soon
         string currentSecretCountAddress = "008C53B8";
-
+        int[] currentSecretOffset = { 0x388 };
         float currentSecretCount;
-        #endregion
 
-        public Form1()
+        /* i am very stupid and forget how to do this
+        old racertool stuff
+
+        string xPointer = "004BFD28";
+        int[] xOff = { 0x50 };
+        string zPointer = "004D7878";
+        int[] zOff = { 0x54 };
+        string yPointer = "00E29C04";
+        int[] yOff = { 0x58 };
+
+        float xCoord = 0;
+        float zCoord = 0;
+        float yCoord = 0;
+
+        float savedXcoord;
+        float savedZcoord;
+        float savedYcoord;*/
+
+        public TrackerMain()
         {
             InitializeComponent();
         }
@@ -50,6 +70,7 @@ namespace DF2Tracker
             }
             else
             {
+                isGameAvailable = false;
                 statusLabel.Text = "Status: JediKnight.exe NOT found";
             }
         }
@@ -230,33 +251,37 @@ namespace DF2Tracker
         private void currentSecretTimer_Tick(object sender, EventArgs e)
         {
 
-            //TODO: FIX THIS POS
+            //reader for base address
             if (isGameAvailable)
             {
                 myMemory.ReadProcess = myProcess[0];
                 myMemory.Open();
                 int XpointerAddress = HexToDec(currentSecretCountAddress);
                 int bytesRead;
-                uint valueToRead = 3;
+                uint valueToRead = 4;
                 byte[] readAddress = myMemory.Read((IntPtr)XpointerAddress, valueToRead, out bytesRead);
                 currentSecretCount = BitConverter.ToSingle(readAddress, 0);
                 myMemory.CloseHandle();
+                //CloseHandle will crash the program if the game is in admin mode and the program isn't
             }
 
             /*if (isGameAvailable)
             {
                 myMemory.ReadProcess = myProcess[0];
                 myMemory.Open();
-                int XpointerAddress = HexToDec(currentSecretCountAddress);
-                int[] XpointerOffSet = { 0x0 };
+                int secretPointerAddress = HexToDec(currentSecretCountAddress);
+                int[] secretPointerOffSet = currentSecretOffset;
                 int bytesRead;
-                uint valueToRead = 0;
-                byte[] readAddress = myMemory.PointerRead((IntPtr)XpointerAddress, valueToRead, XpointerOffSet, out bytesRead);
+                uint valueToRead = 4;
+                byte[] readAddress = myMemory.PointerRead((IntPtr)secretPointerAddress, valueToRead, secretPointerOffSet, out bytesRead);
                 currentSecretCount = BitConverter.ToSingle(readAddress, 0);
                 myMemory.CloseHandle();
             }*/
 
-            currentSecretLabel.Text = "voi kulli " + currentSecretCount;
+            //closehandle outside if maybe? ???? ? 
+
+            currentSecretLabel.Text = "piss arse " + currentSecretCount;
+
         }
         private void button1_Click(object sender, EventArgs e)
         {
@@ -264,6 +289,10 @@ namespace DF2Tracker
                 + "For the source code and credits to other people, press Help to go the Github page", "hello I'm a help box", MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, 0, "https://github.com/Jisti007/DF2Tracker");
         }
 
+        private void button2_Click(object sender, EventArgs e)
+        {
+            
+        }
     }
 
 }
