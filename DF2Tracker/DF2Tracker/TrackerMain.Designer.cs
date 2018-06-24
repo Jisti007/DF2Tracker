@@ -36,7 +36,6 @@
             this.currentSecretLabel = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // statusLabel
@@ -61,21 +60,23 @@
             // currentSecretLabel
             // 
             this.currentSecretLabel.AutoSize = true;
-            this.currentSecretLabel.Location = new System.Drawing.Point(24, 59);
+            this.currentSecretLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.currentSecretLabel.ForeColor = System.Drawing.Color.Black;
+            this.currentSecretLabel.Location = new System.Drawing.Point(6, 77);
             this.currentSecretLabel.Name = "currentSecretLabel";
-            this.currentSecretLabel.Size = new System.Drawing.Size(19, 13);
+            this.currentSecretLabel.Size = new System.Drawing.Size(78, 55);
             this.currentSecretLabel.TabIndex = 7;
             this.currentSecretLabel.Text = "69";
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(24, 46);
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Location = new System.Drawing.Point(10, 46);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(93, 13);
+            this.label1.Size = new System.Drawing.Size(225, 31);
             this.label1.TabIndex = 10;
-            this.label1.Text = "Current secrets";
+            this.label1.Text = "Current secrets:";
             // 
             // button1
             // 
@@ -88,22 +89,11 @@
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
-            // button2
-            // 
-            this.button2.Location = new System.Drawing.Point(202, 83);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 23);
-            this.button2.TabIndex = 13;
-            this.button2.Text = "button2";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
-            // 
             // TrackerMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(284, 118);
-            this.Controls.Add(this.button2);
+            this.ClientSize = new System.Drawing.Size(281, 159);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.currentSecretLabel);
@@ -124,7 +114,6 @@
         private System.Windows.Forms.Label currentSecretLabel;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Button button2;
     }
 }
 

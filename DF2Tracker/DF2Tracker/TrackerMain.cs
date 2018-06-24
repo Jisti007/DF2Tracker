@@ -32,8 +32,17 @@ namespace DF2Tracker
         int[] currentSecretOffset = { 0x388 };
         float currentSecretCount;
 
+        //BASE ADDRESS: 008C53D0
+        //some pointer: 00005E94
+        //same with this, many results and this one has worked so far
+        string maxSecretCountAddress = "008C53D0";
+        int[] maxSecretOffset = { 0x6a0 };
+        float maxSecretCount;
+
+
         /* i am very stupid and forget how to do this
-        old racertool stuff
+        
+        //old racertool stuff
 
         string xPointer = "004BFD28";
         int[] xOff = { 0x50 };
@@ -277,22 +286,39 @@ namespace DF2Tracker
                 currentSecretCount = BitConverter.ToSingle(readAddress, 0);
                 myMemory.CloseHandle();
             }*/
+            //closehandle outside if-loop? ???? ? 
 
-            //closehandle outside if maybe? ???? ? 
+            //getting maxsecret
+            if (isGameAvailable)
+            {
+                myMemory.ReadProcess = myProcess[0];
+                myMemory.Open();
+                int XpointerAddress = HexToDec(maxSecretCountAddress);
+                int bytesRead;
+                uint valueToRead = 4;
+                byte[] readAddress = myMemory.Read((IntPtr)XpointerAddress, valueToRead, out bytesRead);
+                maxSecretCount = BitConverter.ToSingle(readAddress, 0);
+                myMemory.CloseHandle();
+            }
 
-            currentSecretLabel.Text = "piss arse " + currentSecretCount;
+            currentSecretLabel.Text = currentSecretCount + "/" + maxSecretCount;
+
+            if (currentSecretCount == maxSecretCount)
+            {
+                currentSecretLabel.ForeColor = Color.Green;
+            } else
+            {
+                currentSecretLabel.ForeColor = Color.Black;
+            }
 
         }
         private void button1_Click(object sender, EventArgs e)
         {
             MessageBox.Show("remember to edit this\n\n"
+                + "Currently only works for 1.0 EXE and tested to work with the Steam version. No guarantees this will work. If you experience issues, please make an issue on GitHub and specify your JK version."
                 + "For the source code and credits to other people, press Help to go the Github page", "hello I'm a help box", MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, 0, "https://github.com/Jisti007/DF2Tracker");
         }
 
-        private void button2_Click(object sender, EventArgs e)
-        {
-            
-        }
     }
 
 }
