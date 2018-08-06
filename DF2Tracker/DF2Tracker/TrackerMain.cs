@@ -301,7 +301,15 @@ namespace DF2Tracker
                 myMemory.CloseHandle();
             }
 
+            string oldSecretText = currentSecretLabel.Text;
+
             currentSecretLabel.Text = currentSecretCount + "/" + maxSecretCount;
+
+            //trying to write this to textfile, probably big shit
+            if (currentSecretLabel.Text != oldSecretText) {
+                System.IO.File.WriteAllText(AppDomain.CurrentDomain.BaseDirectory + @"\DF2Tracker_export.txt", currentSecretLabel.Text);            
+            }
+            
 
             if (currentSecretCount == maxSecretCount)
             {
